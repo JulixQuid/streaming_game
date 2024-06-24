@@ -1,5 +1,6 @@
 import pygame
 import cv2
+import os
 
 class SpriteLoader:
     
@@ -15,3 +16,20 @@ class SpriteLoader:
             else:
                 print(f"Warning: Subsurface rectangle at ({x}, {y}, {fixed_w}, {fixed_h}) outside surface area.")
         return sprites
+
+    @staticmethod
+    def load_all_characters(assets_path,sizes=None):
+        all_characters = {}
+        folders = os.listdir(os.path.join(assets_path,"characters"))
+        for folder in folders:
+            sprite_sheets = os.listdir(os.path.join(assets_path,"characters",folder))
+            if sizes is not None:
+                w,h = sizes[folder]
+            else:
+                w,h = 48,48 
+            all_characters[folder] = {}
+            for sheet in sprite_sheets:
+                path_sheet = os.path.join(assets_path,"characters",folder,sheet)
+                all_characters[folder][sheet.split('.')[0]] = SpriteLoader.load_sprites_fixed_size(path_sheet,48,48)
+        return all_characters
+

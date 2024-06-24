@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from scripts.sprite_loader import SpriteLoader
 import random
+import os 
 
 """
 Characters randomly waandering around doing random actions.
@@ -15,28 +16,25 @@ Characters randomly waandering around doing random actions.
 import os
 import pygame as pg
 
-if not pg.font:
-    print("Warning, fonts disabled")
-if not pg.mixer:
-    print("Warning, sound disabled")
 
-main_dir = os.path.split(os.path.abspath(__file__))[0]
-data_dir = os.path.join(main_dir, "assets")
-
-# pygame setup
-
-# Loading sprites.
-image_path = "/home/julixquid/games/idle/assets/characters/cyborg/Cyborg_attack1.png"
-image_sprites = SpriteLoader.load_sprites_fixed_size(image_path,48,48)
 #Loading Background
 def main():
     pygame.init()
+    main_dir = os.path.split(os.path.abspath(__file__))[0]
+    assets_dir = os.path.join(main_dir, "assets")
+
+    # pygame setup
+    characters = SpriteLoader.load_all_characters(assets_dir)
+    print(characters)
+    r_choice = random.choice(list(characters.keys()))
+    a_choice = random.choice(list(characters[r_choice].keys()))
+    image_sprites = characters[r_choice][a_choice]
+    
     screen = pygame.display.set_mode((1280, 720))
     clock = pygame.time.Clock()
     value = 0
     dt = 0
     run = True
-    print("XXXXXX")
     #Game running routine
     while run:
         # poll for events
@@ -48,19 +46,13 @@ def main():
         # fill the screen with background to wipe away anything from last frame
         
         clock.tick(5)
-        """
-        pygame.draw.circle(screen, "red", player_pos, 40)
-
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            player_pos.y -= 300 * dt
         if keys[pygame.K_s]:
-            player_pos.y += 300 * dt
-        if keys[pygame.K_a]:
-            player_pos.x -= 300 * dt
-        if keys[pygame.K_d]:
-            player_pos.x += 300 * dt
-        """
+            r_choice = random.choice(list(characters.keys()))
+            a_choice = random.choice(list(characters[r_choice].keys()))
+            image_sprites = characters[r_choice][a_choice]
+ 
+        
         # flip() the display to put your work on screen
         #pygame.display.flip()
         screen.fill("purple")
@@ -69,15 +61,7 @@ def main():
         # independent physics.
         dt = clock.tick(60) / 1000
         #window = pygame.display.set_mode((600, 600))
-    
 
-
-    
-
-    
-        # Setting the framerate to 3fps just
-        # to see the result properly
-    
         # Setting 0 in value variable if its
         # value is greater than the length
         # of our sprite list
@@ -110,4 +94,11 @@ def main():
 
 
 if __name__ == '__main__':
+
+    if not pg.font:
+        print("Warning, fonts disabled")
+    if not pg.mixer:
+        print("Warning, sound disabled")
+
+    
     main()
